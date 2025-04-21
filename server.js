@@ -4,10 +4,12 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const DB = require("./db");
+const path = require("path");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname)));
 
 const queryDB = (sql, param) => {
    return new Promise((resolve, reject) => {
@@ -48,6 +50,11 @@ const migrateDatabase = async () => {
 };
 
 migrateDatabase();
+
+// Add route for serving the index.html file
+app.get("/", (req, res) => {
+   res.sendFile(path.join(__dirname, "index.html"));
+});
 
 app.post("/todo", async (req, res) => {
    try {
