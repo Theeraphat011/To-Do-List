@@ -30,12 +30,14 @@ const migrateDatabase = async () => {
          WHERE TABLE_NAME = 'todos'
          AND COLUMN_NAME = 'completed'
          AND TABLE_SCHEMA = DATABASE()`;
-      
+
       const columnCheck = await queryDB(checkColumnSql);
-      
+
       if (columnCheck[0].columnExists === 0) {
          console.log("Adding 'completed' column to todos table...");
-         await queryDB("ALTER TABLE todos ADD COLUMN completed BOOLEAN DEFAULT false");
+         await queryDB(
+            "ALTER TABLE todos ADD COLUMN completed BOOLEAN DEFAULT false"
+         );
          console.log("Column 'completed' added successfully!");
       } else {
          console.log("Column 'completed' already exists");
@@ -95,9 +97,9 @@ app.patch("/todo/:id/toggle", async (req, res) => {
    try {
       const { id } = req.params;
       const { completed } = req.body;
-      
-      const completedValue = completed === 'true' || completed === true ? 1 : 0;
-      
+
+      const completedValue = completed === "true" || completed === true ? 1 : 0;
+
       const sql = "UPDATE todos SET completed = ? WHERE id = ?";
       const result = await queryDB(sql, [completedValue, id]);
 
@@ -108,10 +110,10 @@ app.patch("/todo/:id/toggle", async (req, res) => {
       }
    } catch (err) {
       console.error("Toggle task error:", err);
-      res.status(500).json({ 
-         success: false, 
-         message: "Internal Server Error", 
-         error: err.message 
+      res.status(500).json({
+         success: false,
+         message: "Internal Server Error",
+         error: err.message,
       });
    }
 });
